@@ -1,7 +1,7 @@
 # Личный проект «Код и Магия» [![Build status][travis-image]][travis-url] [![Dependency status][dependency-image]][dependency-url]
 
 * Студент: [Мария Филонова](https://up.htmlacademy.ru/javascript/7/user/154329).
-* Наставник: `Неизвестно`.
+* Наставник: `Максим Ерехинский`.
 
 ---
 
