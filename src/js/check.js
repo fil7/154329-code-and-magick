@@ -3,8 +3,8 @@ function getMessage(a, b) {
 	return (a === true) ? 'Я попал в ' + b : 
 				(a === false) ? 'Я никуда не попал' :
 					(typeof a === "number") ? 'Я прыгнул на ' + (a * 100) + ' сантиметров' :
-						(!Array.isArray(b) && Array.isArray(a)) ? 'Я прошёл ' + getNumberOfSteps(a) + ' шагов' :
-							(Array.isArray(b) && Array.isArray(a)) ? 'Я прошёл ' + getDistancePath(a, b) + ' метров' :
+						(Array.isArray(b) && Array.isArray(a)) ? 'Я прошёл ' + getDistancePath(a, b) + ' метров' :
+							(Array.isArray(a)) ? 'Я прошёл ' + getNumberOfSteps(a) + ' шагов' :							
 								'Переданы некорректные данные';
 }
 
