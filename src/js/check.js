@@ -1,27 +1,11 @@
 "use strict";
 function getMessage(a, b) {
-	var resultMessage = '';
-
-	if (typeof a === "boolean") {
-		if (a)  {
-			resultMessage = 'Я попал в ' + b;
-		} else {
-			resultMessage = 'Я никуда не попал';
-		}
-	} else 
-		if (typeof a === "number") {
-			resultMessage = 'Я прыгнул на ' + (a * 100) + ' сантиметров';
-	} else 
-		if (typeof a === "object" && a.length > 0 && typeof b != "object") {		
-			resultMessage = 'Я прошёл ' + getNumberOfSteps(a) + ' шагов';
-	} else 
-		if (typeof a === "object" && a.length > 0 && typeof b === "object" && b.length > 0) {
-			resultMessage = 'Я прошёл ' + getDistancePath(a, b) + ' метров';
-	} else {
-			resultMessage = 'Переданы некорректные данные';
-	}
-
-	return resultMessage;
+	return (a === true) ? 'Я попал в ' + b : 
+				(a === false) ? 'Я никуда не попал' :
+					(typeof a === "number") ? 'Я прыгнул на ' + (a * 100) + ' сантиметров' :
+						(!Array.isArray(b) && Array.isArray(a)) ? 'Я прошёл ' + getNumberOfSteps(a) + ' шагов' :
+							(Array.isArray(b) && Array.isArray(a)) ? 'Я прошёл ' + getDistancePath(a, b) + ' метров' :
+								'Переданы некорректные данные';
 }
 
 function getNumberOfSteps(a) {
