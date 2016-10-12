@@ -408,20 +408,90 @@ window.Game = (function() {
      * Отрисовка экрана паузы.
      */
     _drawPauseScreen: function() {
+
+      var ctx = this.ctx;
+      var message = {
+        text: '',
+        font: '16px PT Mono',
+        colorFont: '#000',
+        paddingTop: 30,
+        paddingRight: 100,
+        paddingLeft: 30,
+        lineHeight: 30
+      };
+      var field = {
+        x: 300,
+        y: 120,
+        width: 250,
+        height: 70,
+        color: '#FFF',
+        shadowColor: 'rgba(0, 0, 0, 0.7)',
+        shadowOffsetX: 10,
+        shadowOffsetY: 10
+      };
+
       switch (this.state.currentStatus) {
         case Verdict.WIN:
-          console.log('you have won!');
+          message.text = 'Вы выиграли!';
           break;
         case Verdict.FAIL:
-          console.log('you have failed!');
+          message.text = 'Game Over :(';
           break;
         case Verdict.PAUSE:
-          console.log('game is on pause!');
+          message.text = 'Пауза...';
           break;
         case Verdict.INTRO:
-          console.log('welcome to the game! Press Space to start');
+          message.text = 'Добро пожаловать! Для запуска игры нажмите Пробел';
+          field.height = 130;
           break;
       }
+
+      drawMessageField();
+      drawMessageText();
+
+      function drawMessageField() {
+        ctx.save();
+        ctx.fillStyle = field.color;
+        ctx.shadowColor = field.shadowColor;
+        ctx.shadowOffsetX = field.shadowOffsetX;
+        ctx.shadowOffsetY = field.shadowOffsetY;
+        ctx.fillRect(field.x, field.y, field.width, field.height);
+        ctx.restore();
+      }
+
+      function drawMessageText() {
+        ctx.save();
+        ctx.textBaseline = 'hanging';
+        ctx.fillStyle = message.colorFont;
+        ctx.font = message.font;
+        var x = field.x + message.paddingLeft;
+        var y = field.y + message.paddingTop;
+        var availableWidth = field.width - message.paddingRight;
+
+        var words = message.text.split(' ');
+        var countWords = words.length;
+        var line = '';
+        var countLine = 0;
+
+        for (var i = 0; i < countWords; i++) {
+          var currentLine = line + words[i] + ' ';
+          var currentLineWidth = Math.round(ctx.measureText(currentLine).width);
+          if (currentLineWidth < availableWidth) {
+            line = currentLine;
+          } else {
+            ctx.fillText(currentLine, x, getYForNewLine());
+            countLine++;
+            line = '';
+          }
+        }
+        ctx.fillText(line, x, getYForNewLine());
+
+        function getYForNewLine() {
+          return y + countLine * message.lineHeight;
+        }
+
+      }
+      ctx.restore();
     },
 
     /**
