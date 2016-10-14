@@ -410,88 +410,79 @@ window.Game = (function() {
     _drawPauseScreen: function() {
 
       var ctx = this.ctx;
-      var message = {
-        text: '',
-        font: '16px PT Mono',
-        colorFont: '#000',
-        paddingTop: 30,
-        paddingRight: 100,
-        paddingLeft: 30,
-        lineHeight: 30
-      };
-      var field = {
-        x: 300,
-        y: 120,
-        width: 250,
-        height: 70,
-        color: '#FFF',
-        shadowColor: 'rgba(0, 0, 0, 0.7)',
-        shadowOffsetX: 10,
-        shadowOffsetY: 10
-      };
 
       switch (this.state.currentStatus) {
         case Verdict.WIN:
-          message.text = 'Вы выиграли!';
+          drawMessage('Вы выиграли!');
           break;
         case Verdict.FAIL:
-          message.text = 'Game Over :(';
+          drawMessage('Game Over :(');
           break;
         case Verdict.PAUSE:
-          message.text = 'Пауза...';
+          drawMessage('Пауза...');
           break;
         case Verdict.INTRO:
-          message.text = 'Добро пожаловать! Для запуска игры нажмите Пробел';
-          field.height = 130;
+          drawMessage('Добро пожаловать! Для запуска игры нажмите Пробел');
           break;
       }
 
-      drawMessageField();
-      drawMessageText();
+      function drawMessage(text) {
 
-      function drawMessageField() {
+        var field = {
+          x: 300,
+          y: 120,
+          width: 250,
+          height: 130
+        };
+
         ctx.save();
-        ctx.fillStyle = field.color;
-        ctx.shadowColor = field.shadowColor;
-        ctx.shadowOffsetX = field.shadowOffsetX;
-        ctx.shadowOffsetY = field.shadowOffsetY;
+
+        ctx.fillStyle = '#FFF';
+        ctx.shadowColor = 'rgba(0, 0, 0, 0.7)';
+        ctx.shadowOffsetX = 10;
+        ctx.shadowOffsetY = 10;
         ctx.fillRect(field.x, field.y, field.width, field.height);
+        ctx.shadowOffsetX = 0;
+        ctx.shadowOffsetY = 0;
+        ctx.translate(field.x, field.y);
+        drawMessageText(field.width);
+
         ctx.restore();
-      }
 
-      function drawMessageText() {
-        ctx.save();
-        ctx.textBaseline = 'hanging';
-        ctx.fillStyle = message.colorFont;
-        ctx.font = message.font;
-        var x = field.x + message.paddingLeft;
-        var y = field.y + message.paddingTop;
-        var availableWidth = field.width - message.paddingRight;
+        function drawMessageText(width) {
+          ctx.textBaseline = 'hanging';
+          ctx.fillStyle = '#000';
+          ctx.font = '16px PT Mono';
+          var padding = 30;
+          var lineHeight = 30;
+          var x = padding;
+          var y = padding;
+          var availableWidth = width - 2 * padding;
 
-        var words = message.text.split(' ');
-        var countWords = words.length;
-        var line = '';
-        var countLine = 0;
+          var words = text.split(' ');
+          var countWords = words.length;
+          var line = '';
+          var countLine = 0;
 
-        for (var i = 0; i < countWords; i++) {
-          var currentLine = line + words[i] + ' ';
-          var currentLineWidth = Math.round(ctx.measureText(currentLine).width);
-          if (currentLineWidth < availableWidth) {
-            line = currentLine;
-          } else {
-            ctx.fillText(currentLine, x, getYForNewLine());
-            countLine++;
-            line = '';
+          for (var i = 0; i < countWords; i++) {
+            var currentLine = line + words[i] + ' ';
+            var currentLineWidth = Math.round(ctx.measureText(currentLine).width);
+            if (currentLineWidth < availableWidth) {
+              line = currentLine;
+            } else {
+              ctx.fillText(currentLine, x, getYForNewLine());
+              countLine++;
+              line = '';
+            }
+          }
+          ctx.fillText(line, x, getYForNewLine());
+
+          function getYForNewLine() {
+            return y + countLine * lineHeight;
           }
         }
-        ctx.fillText(line, x, getYForNewLine());
-
-        function getYForNewLine() {
-          return y + countLine * message.lineHeight;
-        }
-
       }
-      ctx.restore();
+
     },
 
     /**
