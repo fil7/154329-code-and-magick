@@ -408,20 +408,81 @@ window.Game = (function() {
      * Отрисовка экрана паузы.
      */
     _drawPauseScreen: function() {
+
+      var ctx = this.ctx;
+
       switch (this.state.currentStatus) {
         case Verdict.WIN:
-          console.log('you have won!');
+          drawMessage('Вы выиграли!');
           break;
         case Verdict.FAIL:
-          console.log('you have failed!');
+          drawMessage('Game Over :(');
           break;
         case Verdict.PAUSE:
-          console.log('game is on pause!');
+          drawMessage('Пауза...');
           break;
         case Verdict.INTRO:
-          console.log('welcome to the game! Press Space to start');
+          drawMessage('Добро пожаловать! Для запуска игры нажмите Пробел');
           break;
       }
+
+      function drawMessage(text) {
+
+        var field = {
+          x: 300,
+          y: 120,
+          width: 250,
+          height: 130
+        };
+
+        ctx.save();
+
+        ctx.fillStyle = '#FFF';
+        ctx.shadowColor = 'rgba(0, 0, 0, 0.7)';
+        ctx.shadowOffsetX = 10;
+        ctx.shadowOffsetY = 10;
+        ctx.fillRect(field.x, field.y, field.width, field.height);
+        ctx.shadowOffsetX = 0;
+        ctx.shadowOffsetY = 0;
+        ctx.translate(field.x, field.y);
+        drawMessageText(field.width);
+
+        ctx.restore();
+
+        function drawMessageText(width) {
+          ctx.textBaseline = 'hanging';
+          ctx.fillStyle = '#000';
+          ctx.font = '16px PT Mono';
+          var padding = 30;
+          var lineHeight = 30;
+          var x = padding;
+          var y = padding;
+          var availableWidth = width - 2 * padding;
+
+          var words = text.split(' ');
+          var countWords = words.length;
+          var line = '';
+          var countLine = 0;
+
+          for (var i = 0; i < countWords; i++) {
+            var currentLine = line + words[i] + ' ';
+            var currentLineWidth = Math.round(ctx.measureText(currentLine).width);
+            if (currentLineWidth < availableWidth) {
+              line = currentLine;
+            } else {
+              ctx.fillText(currentLine, x, getYForNewLine());
+              countLine++;
+              line = '';
+            }
+          }
+          ctx.fillText(line, x, getYForNewLine());
+
+          function getYForNewLine() {
+            return y + countLine * lineHeight;
+          }
+        }
+      }
+
     },
 
     /**
