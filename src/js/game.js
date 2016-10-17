@@ -408,7 +408,7 @@ window.Game = (function() {
      * Отрисовка экрана паузы.
      */
     _drawPauseScreen: function() {
-
+      var thisObject = this;
       var ctx = this.ctx;
 
       switch (this.state.currentStatus) {
@@ -427,16 +427,13 @@ window.Game = (function() {
       }
 
       function drawMessage(text) {
-
         var field = {
           x: 300,
           y: 120,
           width: 250,
           height: 130
         };
-
         ctx.save();
-
         ctx.fillStyle = '#FFF';
         ctx.shadowColor = 'rgba(0, 0, 0, 0.7)';
         ctx.shadowOffsetX = 10;
@@ -445,44 +442,48 @@ window.Game = (function() {
         ctx.shadowOffsetX = 0;
         ctx.shadowOffsetY = 0;
         ctx.translate(field.x, field.y);
-        drawMessageText(field.width);
-
+        thisObject._drawText(text, field.width);
         ctx.restore();
+      }
+    },
 
-        function drawMessageText(width) {
-          ctx.textBaseline = 'hanging';
-          ctx.fillStyle = '#000';
-          ctx.font = '16px PT Mono';
-          var padding = 30;
-          var lineHeight = 30;
-          var x = padding;
-          var y = padding;
-          var availableWidth = width - 2 * padding;
+    /**
+     * Отрисовка текста на канвасе.
+     * @param text
+     * @param width
+     * @private
+     */
+    _drawText: function(text, width) {
+      this.ctx.textBaseline = 'hanging';
+      this.ctx.fillStyle = '#000';
+      this.ctx.font = '16px PT Mono';
+      var padding = 30;
+      var lineHeight = 30;
+      var x = padding;
+      var y = padding;
+      var availableWidth = width - 2 * padding;
 
-          var words = text.split(' ');
-          var countWords = words.length;
-          var line = '';
-          var countLine = 0;
+      var words = text.split(' ');
+      var countWords = words.length;
+      var line = '';
+      var countLine = 0;
 
-          for (var i = 0; i < countWords; i++) {
-            var currentLine = line + words[i] + ' ';
-            var currentLineWidth = Math.round(ctx.measureText(currentLine).width);
-            if (currentLineWidth < availableWidth) {
-              line = currentLine;
-            } else {
-              ctx.fillText(currentLine, x, getYForNewLine());
-              countLine++;
-              line = '';
-            }
-          }
-          ctx.fillText(line, x, getYForNewLine());
-
-          function getYForNewLine() {
-            return y + countLine * lineHeight;
-          }
+      for (var i = 0; i < countWords; i++) {
+        var currentLine = line + words[i] + ' ';
+        var currentLineWidth = Math.round(this.ctx.measureText(currentLine).width);
+        if (currentLineWidth < availableWidth) {
+          line = currentLine;
+        } else {
+          this.ctx.fillText(currentLine, x, getYForNewLine());
+          countLine++;
+          line = '';
         }
       }
+      this.ctx.fillText(line, x, getYForNewLine());
 
+      function getYForNewLine() {
+        return y + countLine * lineHeight;
+      }
     },
 
     /**
