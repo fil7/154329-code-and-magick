@@ -39,9 +39,7 @@ window.form = (function() {
     form.close();
   };
 
-  formSubmitButton.addEventListener('click', function() {
-    saveCookies();
-  });
+  formSubmitButton.addEventListener('click', saveCookies);
 
   function setFieldListeners() {
     for (var i = 0; i < textFields.length; i++) {
