@@ -4,35 +4,17 @@
 
   var REVIEWS_LOAD_URL = 'http://localhost:1507/api/reviews';
   var IMAGE_LOAD_TIMEOUT = 10000;
-  var REVIEWS_LIST_LOAD_TIMEOUT = 10000;
   var container = document.querySelector('.reviews-list');
   var template = document.getElementById('review-template');
   var templateContainer = 'content' in template ? template.content : template;
   var reviews = [];
 
-  load(REVIEWS_LOAD_URL, loadReviews);
+  load(REVIEWS_LOAD_URL, loadReviews, 'JSONPCallback');
 
   function load(url, callback, callbackName) {
-
-    setCallback(callback, 'JSONPCallback');
-
+    setCallback();
     var script = document.createElement('script');
     script.src = url + '?callback=' + callbackName;
-
-    var reviewsLoadingTimeout = setTimeout(function () {
-      container.classList.add('reviews-list-loading');
-    }, REVIEWS_LIST_LOAD_TIMEOUT);
-
-    script.onload = function () {
-      clearTimeout(reviewsLoadingTimeout);
-      hideReviewFilters();
-      renderReviewList();
-      showReviewFilters();
-    };
-    script.onerror = function () {
-      container.classList.add('reviews-list-loading');
-    };
-
     document.body.appendChild(script);
 
     function setCallback() {
@@ -47,6 +29,9 @@
 
   function loadReviews(data) {
     reviews = data;
+    hideReviewFilters();
+    renderReviewList();
+    showReviewFilters();
   }
 
   function hideReviewFilters() {
