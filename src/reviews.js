@@ -12,19 +12,15 @@
   load(REVIEWS_LOAD_URL, loadReviews, 'JSONPCallback');
 
   function load(url, callback, callbackName) {
-    setCallback();
+    if (!callbackName) {
+      callbackName = 'cb' + Date.now();
+    }
+    window[callbackName] = function(data) {
+      callback(data);
+    };
     var script = document.createElement('script');
     script.src = url + '?callback=' + callbackName;
     document.body.appendChild(script);
-
-    function setCallback() {
-      if (!callbackName) {
-        callbackName = 'cb' + Date.now();
-      }
-      window[callbackName] = function(data) {
-        callback(data);
-      };
-    }
   }
 
   function loadReviews(data) {
@@ -65,6 +61,7 @@
     };
 
     downloadImage.onerror = function () {
+      clearTimeout(reviewElementTimeout);
       reviewElement.classList.add('review-load-failure');
     };
 
