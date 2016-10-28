@@ -1,23 +1,15 @@
 'use strict';
 
-(function() {
-  var game = new window.Game(document.querySelector('.demo'));
-  game.initializeLevelAndStart();
-  game.setGameStatus(window.Game.Verdict.INTRO);
+require.config({
+  baseUrl: 'js/'
+});
 
-  var formOpenButton = document.querySelector('.reviews-controls-new');
+require(['./startGame'], function(startGame) {
+  startGame();
+});
 
-  /** @param {MouseEvent} evt */
-  formOpenButton.onclick = function(evt) {
-    evt.preventDefault();
+require(['./reviews/reviews'], function(renderReviews) {
+  renderReviews();
+});
 
-    window.form.open(function() {
-      game.setGameStatus(window.Game.Verdict.PAUSE);
-      game.setDeactivated(true);
-    });
-  };
 
-  window.form.onClose = function() {
-    game.setDeactivated(false);
-  };
-})();
