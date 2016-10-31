@@ -10,7 +10,7 @@ define(['./gallery'], function(Gallery) {
    * @param {number} pictureNum - Номер выбранной фотографии
    */
   Gallery.prototype.show = function(pictureNum) {
-    this._addEventListeners(this);
+    this._addEventListeners();
     this.gallery.galleryElem.classList.remove('invisible');
     this.setActivePicture(pictureNum);
   };
@@ -45,8 +45,8 @@ define(['./gallery'], function(Gallery) {
     }
   };
 
-  Gallery.prototype._controlListener = function(nextNumber) {
-    this.setActivePicture(nextNumber);
+  Gallery.prototype._controlListener = function(direction) {
+    this.setActivePicture(this.activePicture + direction);
   };
 
   Gallery.prototype._keyDownListener = function(e) {
@@ -58,26 +58,18 @@ define(['./gallery'], function(Gallery) {
     }
   };
 
-  Gallery.prototype._addEventListeners = function(_self) {
-    _self.gallery.closeElement.onclick = function() {
-      _self.hide();
-    };
-    _self.gallery.controlLeft.onclick = function() {
-      _self._controlListener(_self.activePicture - 1);
-    };
-    this.gallery.controlRight.onclick = function() {
-      _self._controlListener(_self.activePicture + 1);
-    };
-    document.onkeydown = function(e) {
-      _self._keyDownListener(e);
-    };
+  Gallery.prototype._addEventListeners = function() {
+    document.onkeydown = this._keyDownListener.bind(this);
+    this.gallery.closeElement.onclick = this.hide.bind(this);
+    this.gallery.controlRight.onclick = this._controlListener.bind(this, 1);
+    this.gallery.controlLeft.onclick = this._controlListener.bind(this, -1);
   };
 
   Gallery.prototype._removeEventListeners = function() {
+    document.onkeydown = null;
     this.gallery.closeElement.onclick = null;
     this.gallery.controlRight.onclick = null;
     this.gallery.controlLeft.onclick = null;
-    document.onkeydown = null;
   };
 
   function imagesCache() {
