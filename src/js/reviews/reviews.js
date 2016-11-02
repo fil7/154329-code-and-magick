@@ -1,9 +1,10 @@
 'use strict';
 
-define(['./review', '../load'],
-  function(getReviewElement, load) {
+define(['../load', './reviewObject'],
+  function(load, Review) {
 
     var reviews = [];
+    var reviewsObjects = [];
     var REVIEWS_LOAD_URL = 'http://localhost:1507/api/reviews';
     var container = document.querySelector('.reviews-list');
 
@@ -21,7 +22,10 @@ define(['./review', '../load'],
 
     function renderReviewList() {
       reviews.forEach(function(review) {
-        container.appendChild(getReviewElement(review));
+        var reviewObj = new Review(review);
+        reviewObj.addHandlers();
+        reviewsObjects.push(reviewObj);
+        container.appendChild(reviewObj.element);
       });
     }
 
