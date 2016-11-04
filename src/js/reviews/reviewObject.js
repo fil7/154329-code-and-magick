@@ -8,34 +8,35 @@ define(['./review'], function(getReviewElement) {
 
     /** Свойство, которое содержит DOM-элемент */
     this.element = getReviewElement(this.data);
-    var answerElements = this.element.querySelectorAll('.review-quiz-answer');
+    var quiz = this.element.querySelector('.review-quiz');
 
     /** Обработчики событий кликов по элементам review-quiz-answer */
     this.addHandlers = function() {
-      answerElements.forEach(
-        function(answer) {
-          answer.onclick = this._quizAnswerOnClickHandler.bind(this);
-        },
-        this
-      );
+      this.quizHandler = this._quizAnswerOnClickHandler.bind(this);
+      quiz.addEventListener('click', this.quizHandler);
     };
 
     /** Метод, который удаляет обработчики событий */
     this.remove = function() {
-      answerElements.forEach(function(answer) {
-        answer.onclick = null;
-      });
+      quiz.removeEventListener('click', this.quizHandler);
+      this.quizHandler = null;
     };
+
+    this.addHandlers();
   }
 
-  Review.prototype._quizAnswerOnClickHandler = function(e) {
+  Review.prototype._quizAnswerOnClickHandler = function _quizAnswerOnClickHandler(e) {
     var evt = e || event;
-    var activeAnswer = this.element.querySelector('.review-quiz-answer-active');
-    if (activeAnswer) {
-      activeAnswer.classList.remove('review-quiz-answer-active');
+    if (evt.target.classList.contains('review-quiz-answer')) {
+      var activeAnswer = this.element.querySelector('.review-quiz-answer-active');
+      if (activeAnswer) {
+        activeAnswer.classList.remove('review-quiz-answer-active');
+      }
+      evt.target.classList.add('review-quiz-answer-active');
     }
-    evt.target.classList.add('review-quiz-answer-active');
   };
+
+
 
   return Review;
 });
