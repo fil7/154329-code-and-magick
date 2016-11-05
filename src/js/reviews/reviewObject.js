@@ -10,22 +10,17 @@ define(['./review'], function(getReviewElement) {
     this.element = getReviewElement(this.data);
     var quiz = this.element.querySelector('.review-quiz');
 
-    /** Обработчики событий кликов по элементам review-quiz-answer */
-    this.addHandlers = function() {
-      this.quizHandler = this._quizAnswerOnClickHandler.bind(this);
-      quiz.addEventListener('click', this.quizHandler);
-    };
-
     /** Метод, который удаляет обработчики событий */
     this.remove = function() {
-      quiz.removeEventListener('click', this.quizHandler);
-      this.quizHandler = null;
+      quiz.removeEventListener('click', quizHandler);
+      quizHandler = null;
     };
 
-    this.addHandlers();
+    var quizHandler = _quizAnswerOnClickHandler.bind(this);
+    quiz.addEventListener('click', quizHandler);
   }
 
-  Review.prototype._quizAnswerOnClickHandler = function _quizAnswerOnClickHandler(e) {
+  function _quizAnswerOnClickHandler(e) {
     var evt = e || event;
     if (evt.target.classList.contains('review-quiz-answer')) {
       var activeAnswer = this.element.querySelector('.review-quiz-answer-active');
@@ -35,8 +30,6 @@ define(['./review'], function(getReviewElement) {
       evt.target.classList.add('review-quiz-answer-active');
     }
   };
-
-
 
   return Review;
 });
