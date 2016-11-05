@@ -29,7 +29,7 @@ define(['./review'], function(getReviewElement) {
       }
       evt.target.classList.add('review-quiz-answer-active');
     }
-  };
+  }
 
   return Review;
 });
