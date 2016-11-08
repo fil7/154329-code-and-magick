@@ -55,10 +55,12 @@ define(['../load', './reviewObject'],
     }
 
     function filterHandler(e) {
+      var evt = e || event;
+      var target = evt.target || evt.srcElement;
       pageNumber = 0;
       params.from = pageNumber * PAGE_SIZE;
       params.to = params.from + PAGE_SIZE;
-      params.filter = e.srcElement.id;
+      params.filter = target.id;
       load(REVIEWS_LOAD_URL, params, loadReviews);
     }
 
