@@ -2,17 +2,20 @@
 
 define(
   function() {
-
-    return function(url, callback, callbackName) {
-      if (!callbackName) {
-        callbackName = 'cb' + Date.now();
-      }
-      window[callbackName] = function(data) {
-        callback(data);
-      };
-      var script = document.createElement('script');
-      script.src = url + '?callback=' + callbackName;
-      document.body.appendChild(script);
+    var getSearchString = function(params) {
+      return Object.keys(params).map(function(param) {
+        return [param, params[param]].join('=');
+      }).join('&');
     };
+    return function(url, params, callback) {
+      var xhr = new XMLHttpRequest();
 
+      xhr.addEventListener('load', function(evt) {
+        var loadedData = JSON.parse(evt.target.responseText);
+        callback(loadedData);
+      });
+
+      xhr.open('GET', url + '?' + getSearchString(params));
+      xhr.send();
+    };
   });

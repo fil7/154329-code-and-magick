@@ -19,7 +19,7 @@ require(['./gallery', './galleryPrototype'], function(Gallery) {
     return elem.children[0].src;
   });
   var gallery = new Gallery(imageSrc);
-  pictures.forEach(function(elem, i) {
+  Array.prototype.forEach.call(pictures, function(elem, i) {
     elem.addEventListener('click', function() {
       gallery.show(i);
     });
