@@ -268,8 +268,14 @@ window.Game = (function() {
 
     this.ctx = this.canvas.getContext('2d');
 
+    this._cloudsElement = document.querySelector('.header-clouds');
+    this._demoElement = document.querySelector('.demo');
+    this._THROTTLE_TIMEOUT = 150;
+    this._timeOfLastCallScrollHandler = Date.now();
+
     this._onKeyDown = this._onKeyDown.bind(this);
     this._onKeyUp = this._onKeyUp.bind(this);
+    this._onScroll = this._onScroll.bind(this);
     this._pauseListener = this._pauseListener.bind(this);
 
     this.setDeactivated(false);
@@ -752,10 +758,24 @@ window.Game = (function() {
       }
     },
 
+    _onScroll: function() {
+      if (Date.now() - this._timeOfLastCallScrollHandler >= this._THROTTLE_TIMEOUT) {
+        var demo = this._demoElement.getBoundingClientRect();
+        if (demo.bottom < 0) {
+          this.setGameStatus(Game.Verdict.PAUSE);
+        } else {
+          var clouds = this._cloudsElement.getBoundingClientRect();
+          this._cloudsElement.style.backgroundPositionX = clouds.top / 3 + 'px';
+        }
+        this._timeOfLastCallScrollHandler = Date.now();
+      }
+    },
+
     /** @private */
     _initializeGameListeners: function() {
       window.addEventListener('keydown', this._onKeyDown);
       window.addEventListener('keyup', this._onKeyUp);
+      window.addEventListener('scroll', this._onScroll);
     },
 
     /** @private */
